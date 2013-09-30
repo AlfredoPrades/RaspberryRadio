@@ -1,6 +1,12 @@
 import os
 import time
 import RPi.GPIO as GPIO
+import subprocess
+
+proc = subprocess.Popen(["mpc", "ls"], stdout=subprocess.PIPE, shell=True)
+(out, err) = proc.communicate()
+playLists = out.split();
+
 
 GPIO.setmode(GPIO.BCM)
 
