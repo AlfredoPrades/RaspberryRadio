@@ -3,21 +3,23 @@ import time
 import RPi.GPIO as GPIO
 import subprocess
 
+
+#Obtain the list of playlists present at the moment and create a python list 
 proc = subprocess.Popen(["mpc", "ls"], stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 playLists = out.split();
+#playLists = [  "News" ,"Chillout" ,"Trance","DI_resto" ]
 
 
 GPIO.setmode(GPIO.BCM)
-
+#current playlist index
 pI = 0
-playLists = [  "News" ,"Chillout" ,"Trance","DI_resto" ]
-
-
+#flag indicating if we are playing at the moment
 playing = 0
+#counter to halt the system if needed 
 haltCount = 0
 
-
+#action for prev button: previous track, reset halt counter
 def prevt ( ):
   print "prevt"
   os.system("mpc prev")
@@ -95,24 +97,28 @@ outButton = { 22 : ('prevt',prevt),
 	      18 : ('down',down )	} 
 	
 inputPins= outButton.keys()
-inp =       [ 0 ,0 ,0 ,0 ,0 ,0 ]
+inp = 0
 prev_input =[ 0 ,0 ,0 ,0 ,0 ,0 ]
 
+
+#Setting up all the pins we are gone read
 for i in range(0,len(inputPins)):
   GPIO.setup(inputPins[i],GPIO.IN)
 
-
-print ("radior")
+print ("Raspberry Radio Control ")
 while True:
   for i in range(0,len(inputPins)):
-    #take a reading
-    inp[i] = GPIO.input(inputPins[i])
-    #if the last reading was low and this one high, print
-    if ( (not prev_input[i]) and ( inp[i] )  ):
-      print(inputPins[i])
+    #take a reading for this pin
+    inp = GPIO.input(inputPins[i])
+    #if the last reading was low and this one high, call the function
+    if ( ( not prev_input[i] ) and ( inp )  ):
+      print( inputPins[i] )
       (outButton[inputPins[i]][1])()	  
 
-    prev_input[i] = inp[i]
+	#save current status to compare in the next iteration of the while  
+    prev_input[i] = inp
+	
+  #don't fry the cpu	
   time.sleep(0.10)
 
 
