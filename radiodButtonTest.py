@@ -5,7 +5,7 @@ import subprocess
 
 
 #Obtain the list of playlists present at the moment and create a python list 
-proc = subprocess.Popen(["mpc", "ls"], stdout=subprocess.PIPE, shell=True)
+proc = subprocess.Popen(["mpc ls"], stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 playLists = out.split();
 #playLists = [  "News" ,"Chillout" ,"Trance","DI_resto" ]
@@ -120,5 +120,6 @@ while True:
 	
   #don't fry the cpu	
   time.sleep(0.10)
+
 
 
